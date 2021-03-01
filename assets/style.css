@@ -1,0 +1,33 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  margin: 1rem;
+  background-color: darkblue;
+  color: aliceblue;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+#content > div {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: stretch;
+}
+
+#crew-list {
+  flex: 1 1 10%;
+  padding: 1rem;
+}
+
+#crew-list ul {
+  list-style: none;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+#crew-detail {
+  flex: 9 9 90%;
+  padding: 1rem;
+}
