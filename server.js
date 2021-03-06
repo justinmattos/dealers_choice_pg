@@ -1,6 +1,5 @@
 const { syncAndSeed } = require('./data/db');
 const express = require('express');
-const morgan = require('morgan');
 const crewRouter = require('./routes/crew');
 const apiRouter = require('./routes/api');
 
@@ -10,7 +9,6 @@ app.use('/crew', crewRouter);
 app.use('/api', apiRouter);
 app.use('/dist', express.static('./dist'));
 app.use('/assets', express.static('./assets'));
-app.use(morgan('dev'));
 
 app.get('/', (req, res, next) => {
   res.redirect('/crew');
