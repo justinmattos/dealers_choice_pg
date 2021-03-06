@@ -16,11 +16,11 @@ class Main extends Component {
     this.updateCrew()
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state !== prevState) {
-      this.updateCrew();
-    }
-  }
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (this.state !== prevState) {
+  //     this.updateCrew();
+  //   }
+  // }
 
   updateCrew = () => {
     axios
@@ -64,6 +64,7 @@ class Main extends Component {
         this.selectCrew(id);
       });
       this.setState({ editMode: false })
+      this.updateCrew();
     } else {
       this.setState({ editMode: true });
     }
@@ -77,6 +78,7 @@ class Main extends Component {
         this.setState({
           selected: null
         });
+        this.updateCrew();
       })
       .catch(() => alert('Failed to delete crew due to server error'));
   };
