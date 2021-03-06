@@ -9,64 +9,97 @@ class Main extends Component {
   state = {
     crew: [],
     selected: null,
+    editMode: false,
   };
 
   componentDidMount() {
+    this.updateCrew()
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state !== prevState) {
+      this.updateCrew();
+    }
+  }
+
+  updateCrew = () => {
     axios
-      .get('/api/crew')
-      .then((crew) => {
-        crew = crew.data.sort((a, b) => {
-          if (a.name > b.name) return 1;
-          else if (a.name < b.name) return -1;
-          else return 0;
-        });
-        this.setState({
-          crew,
-        });
-        const hash = window.location.hash.slice(1);
-        if (hash) this.selectCrew(hash);
-      })
-      .catch((err) => console.log(err));
+    .get('/api/crew')
+    .then((crew) => {
+      crew = crew.data.sort((a, b) => {
+        if (a.name > b.name) return 1;
+        else if (a.name < b.name) return -1;
+        else return 0;
+      });
+      this.setState({
+        crew,
+      });
+      const hash = window.location.hash.slice(1);
+      if (hash) this.selectCrew(hash);
+    })
+    .catch((err) => console.log(err));
   }
 
   selectCrew = (crew_id) => {
-    axios.get(`/api/crew/${crew_id}`)
+    axios
+      .get(`/api/crew/${crew_id}`)
       .then((crewDetail) => {
-        crewDetail = crewDetail.data
+        crewDetail = crewDetail.data;
         this.setState({
           selected: crewDetail,
-        })
+        });
         window.location.hash = crewDetail.crew_id;
       })
       .catch((err) => console.log(err));
-  }
+  };
 
-  editCrew = () => {}
+  editCrew = (id) => {
+    let { editMode } = this.state;
+    if (editMode) {
+      const [name, bio] = [
+        '#NAME',
+        '#BIO',
+      ].map((selector) => document.querySelector(selector).value);
+      axios.put(`/api/crew/${id}`, `name=${name}&bio=${bio}`).then(() => {
+        this.selectCrew(id);
+      });
+      this.setState({ editMode: false })
+    } else {
+      this.setState({ editMode: true });
+    }
+  };
 
-  deleteCrew = () => {
+  deleteCrew = (id) => {
+    const URL = `/api/crew/${id}`;
     axios
-      .delete(`/api/crew/${this.selected.crew_id}`)
+      .delete(URL)
       .then(() => {
         this.setState({
           selected: null
-        })
+        });
       })
-  }
+      .catch(() => alert('Failed to delete crew due to server error'));
+  };
 
   render() {
-    const { crew, selected } = this.state;
+    const { crew, selected, editMode } = this.state;
     return (
       <div>
         <div id="crew-list">
-          <CrewList crew={crew} selectCrew={this.selectCrew}/>
+          <CrewList crew={crew} selectCrew={this.selectCrew} />
         </div>
-        {selected ? <div id="crew-detail">
-          <CrewDetail
-            selected={selected}
-            editCrew={this.editCrew}
-            deleteCrew={this.deleteCrew}
-          />
-        </div> : ''}
+        {selected ? (
+          <div id="crew-detail">
+            <CrewDetail
+              selected={selected}
+              editMode={editMode}
+              editCrew={this.editCrew}
+              deleteCrew={this.deleteCrew}
+            />
+          </div>
+        ) : (
+          ''
+        )}
       </div>
     );
   }

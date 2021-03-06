@@ -10,7 +10,7 @@ app.use('/crew', crewRouter);
 app.use('/api', apiRouter);
 app.use('/dist', express.static('./dist'));
 app.use('/assets', express.static('./assets'));
-app.use(morgan('short'));
+app.use(morgan('dev'));
 
 app.get('/', (req, res, next) => {
   res.redirect('/crew');

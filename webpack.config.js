@@ -1,10 +1,11 @@
+const path = require('path');
+
 const webpackConfig = {
   entry: './src/index.js',
   output: {
-    path: __dirname,
-    filename: './bundle.js',
+    path: path.join(__dirname, './dist'),
+    filename: 'main.js',
   },
-  context: __dirname,
   module: {
     rules: [
       {
